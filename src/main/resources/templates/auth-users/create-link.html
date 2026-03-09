@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Link - TinyURL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            line-height: 1.5;
+        }
+
+        /* Navigation - full width background */
+        nav {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+            font-family: system-ui, sans-serif;
+        }
+
+        /* Navigation inner - constrained width */
+        .nav-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 1rem 20px;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-container a {
+            text-decoration: none;
+        }
+
+        .nav-container .logo {
+            color: #667eea;
+            font-weight: 600;
+            margin-right: auto;
+            font-size: 1.2rem;
+        }
+
+        .nav-container .dashboard {
+            color: #4a5568;
+            padding: 0.5rem 0;
+        }
+
+        .nav-container .create-link {
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .nav-container .create-link:hover {
+            background: #5a67d8;
+        }
+
+        /* Main container - matches nav width */
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .required:after {
+            content: " *";
+            color: #e53e3e;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
+        input:hover {
+            border-color: #b0b0b0;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .hint {
+            font-size: 0.85rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .date-fields {
+            display: none;
+        }
+
+        .date-fields.visible {
+            display: block;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #5a67d8;
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #feb2b2;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f5ff;
+            border-radius: 8px;
+            border: 1px solid #c3dafe;
+            text-align: center;
+        }
+
+        .result a {
+            color: #5a67d8;
+            text-decoration: none;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .result a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 500px) {
+            .row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .nav-container {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .nav-container .logo {
+                width: 100%;
+                text-align: center;
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation - Full width background, constrained content -->
+<nav>
+    <div class="nav-container">
+        <a href="/" class="logo">tinyurl</a>
+        <a href="/user/dashboard" class="dashboard">dashboard</a>
+        <a href="/user/create-link" class="create-link">create new link</a>
+    </div>
+</nav>
+
+<!-- Main content - Matches nav width -->
+<div class="container">
+    <div class="header">
+        <h1>tinyurl</h1>
+        <p>create a short link</p>
+    </div>
+
+    <div class="card">
+        <!-- Success/Error Messages -->
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <!-- Result -->
+        <div th:if="${shortUrl}" class="result">
+            <div style="margin-bottom: 5px; color: #666;">your short link:</div>
+            <a th:href="${shortUrl}" target="_blank" th:text="${shortUrl}"></a>
+        </div>
+
+        <!-- Form -->
+        <form th:action="@{/user/create-link}" method="post" id="linkForm">
+            <!-- CSRF Token (Spring Security) -->
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+
+            <!-- Original URL (required) -->
+            <div class="form-group">
+                <label for="url" class="required">original url</label>
+                <input type="url"
+                       id="url"
+                       name="url"
+                       placeholder="https://example.com/very/long/url"
+                       required
+                       th:value="${url}">
+                <div class="hint">the long url you want to shorten</div>
+            </div>
+
+            <!-- Optional dates toggle -->
+            <div class="checkbox-group">
+                <input type="checkbox"
+                       id="enableDates"
+                       name="enableDates"
+                       onchange="toggleDates()">
+                <label for="enableDates">add expiration dates (optional)</label>
+            </div>
+
+            <!-- Date fields (hidden by default) -->
+            <div id="dateFields" class="date-fields">
+                <div class="row">
+                    <div class="form-group">
+                        <label for="validFrom">valid from</label>
+                        <input type="datetime-local"
+                               id="validFrom"
+                               name="validFrom"
+                               th:value="${validFrom}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="validUntil">valid until</label>
+                        <input type="datetime-local"
+                               id="validUntil"
+                               name="validUntil"
+                               th:value="${validUntil}">
+                    </div>
+                </div>
+                <div class="hint" style="text-align: center;">leave both empty for a three-day valid link starting now</div>
+            </div>
+
+            <!-- Submit button -->
+            <button type="submit">create link</button>
+        </form>
+    </div>
+</div>
+
+<!-- Minimal JavaScript -->
+<script>
+    function toggleDates() {
+        const dateFields = document.getElementById('dateFields');
+        const checkbox = document.getElementById('enableDates');
+
+        if (checkbox.checked) {
+            dateFields.classList.add('visible');
+
+            // Set default dates if empty
+            const now = new Date();
+            const fromInput = document.getElementById('validFrom');
+            const untilInput = document.getElementById('validUntil');
+
+            if (!fromInput.value) {
+                const fromDate = new Date(now);
+                fromDate.setHours(0, 0, 0, 0);
+                fromInput.value = fromDate.toISOString().slice(0, 16);
+            }
+
+            if (!untilInput.value) {
+                const untilDate = new Date(now);
+                untilDate.setDate(now.getDate() + 30);
+                untilDate.setHours(23, 59, 0, 0);
+                untilInput.value = untilDate.toISOString().slice(0, 16);
+            }
+        } else {
+            dateFields.classList.remove('visible');
+            // Clear dates when toggled off
+            document.getElementById('validFrom').value = '';
+            document.getElementById('validUntil').value = '';
+        }
+    }
+
+    // Form validation
+    document.getElementById('linkForm').addEventListener('submit', function(e) {
+        const url = document.getElementById('url').value;
+        const validFrom = document.getElementById('validFrom').value;
+        const validUntil = document.getElementById('validUntil').value;
+
+        // Basic URL validation
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            e.preventDefault();
+            alert('URL must start with http:// or https://');
+            return;
+        }
+
+        // Date validation if both are provided
+        if (validFrom && validUntil) {
+            const fromDate = new Date(validFrom);
+            const untilDate = new Date(validUntil);
+
+            if (fromDate >= untilDate) {
+                e.preventDefault();
+                alert('Valid From must be before Valid Until');
+                return;
+            }
+
+            if (untilDate < new Date()) {
+                e.preventDefault();
+                alert('Valid Until cannot be in the past');
+                return;
+            }
+        }
+    });
+
+    // Auto-fill dates on first checkbox click
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if dates were previously set (e.g., from validation error)
+        const fromValue = document.getElementById('validFrom').value;
+        const untilValue = document.getElementById('validUntil').value;
+
+        if (fromValue || untilValue) {
+            document.getElementById('enableDates').checked = true;
+            document.getElementById('dateFields').classList.add('visible');
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Link - TinyURL</title>
+    <style>
+        .tag-badge {
+            background: #eef;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .required:after {
+            content: " *";
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+
+        .hint-text {
+            color: #6c757d;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            line-height: 1.5;
+        }
+
+        /* Navigation - full width background */
+        nav {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .nav-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 1rem 20px;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-container a {
+            text-decoration: none;
+        }
+
+        .nav-container .logo {
+            color: #667eea;
+            font-weight: 600;
+            margin-right: auto;
+            font-size: 1.2rem;
+        }
+
+        .nav-container .dashboard {
+            color: #4a5568;
+            padding: 0.5rem 0;
+        }
+
+        .nav-container .create-link {
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .nav-container .create-link:hover {
+            background: #5a67d8;
+        }
+
+        /* Main container */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: #666;
+        }
+
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* Read-only info section */
+        .info-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-section h3 {
+            color: #333;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+        }
+
+        .info-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: #333;
+            word-break: break-all;
+        }
+
+        .info-value a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .info-value a:hover {
+            text-decoration: underline;
+        }
+
+        .short-url {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        /* Form */
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section h3 {
+            color: #333;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #555;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .hint {
+            color: #6c757d;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input:hover {
+            border-color: #b0b0b0;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Date inputs container */
+        .date-fields {
+            display: block;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Alert messages */
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .badge-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-expired {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-permanent {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-wrap: wrap;
+            }
+
+            .nav-container .logo {
+                width: 100%;
+                text-align: center;
+                margin-right: 0;
+            }
+
+            .row {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 0.25rem;
+            }
+
+            .info-label {
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav>
+    <div class="nav-container">
+        <a href="/" class="logo">tinyurl</a>
+        <a href="/user/dashboard" class="dashboard">dashboard</a>
+        <a href="/user/create-link" class="create-link">+ create new link</a>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="page-header">
+        <h1>✏️ Edit Link</h1>
+        <p>Modify the validity period of your shortened link</p>
+    </div>
+
+    <!-- Alert Messages -->
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+    <!-- Main Card -->
+    <div class="card">
+        <div class="card-header">
+            <h2>
+                <span>🔗</span>
+                Link Information
+            </h2>
+        </div>
+
+        <div class="card-body">
+            <!-- Read-only Link Information -->
+            <div class="info-section">
+                <h3>
+                    <span>📋</span>
+                    Current Link Details
+                </h3>
+
+                <div class="info-grid">
+                    <div class="info-label">Short URL:</div>
+                    <div class="info-value">
+                        <span class="short-url" th:text="${redirectLinkFormatter.getRedirectLink(link)}"></span>
+                        <span class="badge" th:classappend="${link.validUntil == null} ? 'badge-permanent' :
+                                                                   (${link.validUntil.isAfter(T(java.time.LocalDateTime).now())} ? 'badge-active' : 'badge-expired')"
+                              th:text="${link.validUntil == null} ? 'Permanent' :
+                                           (${link.validUntil.isAfter(T(java.time.LocalDateTime).now())} ? 'Active' : 'Expired')">
+                            </span>
+                    </div>
+
+                    <div class="info-label">Original URL:</div>
+                    <div class="info-value">
+                        <a th:href="${link.originalUrl}" target="_blank" th:text="${link.originalUrl}"></a>
+                    </div>
+
+                    <div class="info-label">Created:</div>
+                    <div class="info-value" th:text="${#temporals.format(link.createdAt, 'dd MMM yyyy, HH:mm')}"></div>
+
+                    <div class="info-label">Last Updated:</div>
+                    <div class="info-value"
+                         th:text="${link.updatedAt != null} ? ${#temporals.format(link.updatedAt, 'dd MMM yyyy, HH:mm')} : 'Never'"></div>
+
+                    <div class="info-label">Valid From:</div>
+                    <div class="info-value"
+                         th:text="${link.validFrom != null} ? ${#temporals.format(link.validFrom, 'dd MMM yyyy, HH:mm')} : 'Immediately'"></div>
+
+                    <div class="info-label">Valid Until:</div>
+                    <div class="info-value"
+                         th:text="${link.validUntil != null} ? ${#temporals.format(link.validUntil, 'dd MMM yyyy, HH:mm')} : 'Never (permanent)'"></div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>
+                    <span>🔗</span>
+                    Edit Original URL
+                </h3>
+
+
+            </div>
+
+            <!-- Edit Form -->
+            <form th:action="@{/user/update-link}" method="post" id="editForm" onsubmit="return validateForm()">
+                <!-- Hidden ID field -->
+                <input type="hidden" name="id" th:value="${link.shortLinkId}"/>
+
+                <div class="form-group">
+                    <label for="originalUrl">
+                        Original URL <span class="required">*</span>
+                        <span class="hint">(The long URL you want to shorten)</span>
+                    </label>
+                    <input type="url"
+                           id="originalUrl"
+                           name="originalUrl"
+                           th:value="${link.originalUrl}"
+                           class="form-control"
+                           placeholder="https://example.com/very/long/url"
+                           required
+                           oninput="validateUrl(this)">
+                    <div id="urlError" class="error-message" style="display: none;"></div>
+                    <div id="urlWarning" class="hint-text"></div>
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <div class="hint">Optional short description for this link.</div>
+                    <textarea id="description"
+                              name="description"
+                              class="form-control"
+                              rows="3"
+                              placeholder="Describe this link..."
+                              th:text="${ (link.description != null and link.description != '') ? link.description : '' }"></textarea>
+                </div>
+
+                <!-- Validity Section -->
+                <div class="form-section">
+                    <h3>
+                        <span>⏰</span>
+                        Edit Validity Period
+                    </h3>
+
+                    <div class="date-fields">
+                        <div class="alert alert-warning" style="margin-bottom: 1rem;">
+                            <strong>Note:</strong> Valid From must be before Valid Until. Leave both empty for permanent
+                            links.
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group">
+                                <label for="validFrom">Valid From</label>
+                                <input type="datetime-local"
+                                       id="validFrom"
+                                       name="validFrom"
+                                       th:value="${ (link.validFrom != null) ? #temporals.format(link.validFrom, 'yyyy-MM-dd''T''HH:mm') : '' }"
+                                       onchange="validateDates()">
+                                <div class="hint">When the link becomes active.</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="validUntil">Valid Until</label>
+                                <input type="datetime-local"
+                                       id="validUntil"
+                                       name="validUntil"
+                                       th:value="${ (link.validUntil != null) ? #temporals.format(link.validUntil, 'yyyy-MM-dd''T''HH:mm') : '' }"
+                                       onchange="validateDates()">
+                                <div class="hint">When the link expires.</div>
+                            </div>
+                        </div>
+
+                        <!-- Validation Messages -->
+                        <div id="dateError" class="error-message" style="display: none;"></div>
+                        <div id="dateWarning" class="alert alert-warning" style="display: none; margin-top: 1rem;">
+                            <span id="dateWarningMessage"></span>
+                        </div>
+
+                        <!-- Quick Presets -->
+                        <div style="margin-top: 1rem;">
+                            <div class="hint" style="margin-bottom: 0.5rem;">Quick presets:</div>
+                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <button type="button" class="btn btn-secondary"
+                                        style="padding: 0.4rem 0.8rem; font-size: 0.85rem;"
+                                        onclick="setDateRange(7, 'days')">7 Days
+                                </button>
+                                <button type="button" class="btn btn-secondary"
+                                        style="padding: 0.4rem 0.8rem; font-size: 0.85rem;"
+                                        onclick="setDateRange(30, 'days')">30 Days
+                                </button>
+                                <button type="button" class="btn btn-secondary"
+                                        style="padding: 0.4rem 0.8rem; font-size: 0.85rem;"
+                                        onclick="setDateRange(1, 'year')">1 Year
+                                </button>
+                                <button type="button" class="btn btn-secondary"
+                                        style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="clearDates()">Clear
+                                    All
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        💾 Update Link
+                    </button>
+
+                    <a href="/dashboard" class="btn btn-secondary">
+                        ↩️ Cancel
+                    </a>
+
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete('[[${link.id}]]')">
+                        🗑️ Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    (function () {
+        // Utility: trim and ignore empty
+        function normalizeTag(t) {
+            return t ? t.trim() : '';
+        }
+
+        // Parse initial tags from hidden input (comma-separated)
+        function getInitialTags() {
+            const raw = document.getElementById('tagsHidden').value || '';
+            if (!raw) return [];
+            return raw.split(',').map(t => normalizeTag(t)).filter(Boolean);
+        }
+
+        // Render chips
+        function renderChips() {
+            const chipsContainer = document.getElementById('tagChips');
+            chipsContainer.innerHTML = '';
+            tags.forEach((tag, idx) => {
+                const span = document.createElement('span');
+                span.className = 'tag-badge';
+                span.style.cssText = 'display:inline-flex; align-items:center; gap:0.4rem; padding:0.25rem 0.5rem; border-radius:12px; background:#eef; font-size:0.85rem;';
+                span.textContent = tag;
+
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.textContent = '✕';
+                removeBtn.style.cssText = 'background:transparent; border:none; cursor:pointer; margin-left:0.4rem; font-size:0.85rem;';
+                removeBtn.onclick = function () {
+                    removeTag(idx);
+                };
+
+                span.appendChild(removeBtn);
+                chipsContainer.appendChild(span);
+            });
+            updateHiddenTags();
+        }
+
+        // Add tag
+        function addTag(tag) {
+            const t = normalizeTag(tag);
+            if (!t) return;
+            // avoid duplicates (case-insensitive)
+            const exists = tags.some(existing => existing.toLowerCase() === t.toLowerCase());
+            if (!exists) {
+                tags.push(t);
+                renderChips();
+            }
+        }
+
+        // Remove tag by index
+        function removeTag(index) {
+            tags.splice(index, 1);
+            renderChips();
+        }
+
+        // Update hidden input value
+        function updateHiddenTags() {
+            document.getElementById('tagsHidden').value = tags.join(',');
+        }
+
+        // Add tag from visible input
+        window.addTagFromInput = function () {
+            const input = document.getElementById('tagInput');
+            addTag(input.value);
+            input.value = '';
+            input.focus();
+        };
+
+        // Handle Enter key in tag input
+        window.onTagInputKeydown = function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addTagFromInput();
+            }
+        };
+
+        // Expose removeTag for inline use (already used above)
+        window.removeTag = removeTag;
+
+        // Initialize tags array and render
+        const tags = getInitialTags();
+        document.addEventListener('DOMContentLoaded', function () {
+            renderChips();
+        });
+
+        // Ensure tags are merged before form submit (in case validateForm returns true)
+        const originalValidateForm = window.validateForm;
+        window.validateForm = function () {
+            updateHiddenTags();
+            if (typeof originalValidateForm === 'function') {
+                return originalValidateForm();
+            }
+            return true;
+        };
+
+        // Expose helper for external scripts if needed
+        window._tagEditor = {
+            addTag: addTag,
+            removeTag: removeTag,
+            getTags: () => tags.slice()
+        };
+    })();
+
+    function validateDates() {
+        const validFrom = document.getElementById('validFrom').value;
+        const validUntil = document.getElementById('validUntil').value;
+        const dateError = document.getElementById('dateError');
+        const dateWarning = document.getElementById('dateWarning');
+        const dateWarningMessage = document.getElementById('dateWarningMessage');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Reset
+        dateError.style.display = 'none';
+        dateWarning.style.display = 'none';
+        submitBtn.disabled = false;
+
+        // If both are empty, it's valid (permanent link)
+        if (!validFrom && !validUntil) {
+            return true;
+        }
+
+        // If one is filled but not both
+        if ((validFrom && !validUntil) || (!validFrom && validUntil)) {
+            dateError.style.display = 'block';
+            dateError.innerHTML = '❌ Both Valid From and Valid Until must be filled together';
+            submitBtn.disabled = true;
+            return false;
+        }
+
+        const fromDate = new Date(validFrom);
+        const untilDate = new Date(validUntil);
+        const now = new Date();
+
+        // Check if dates are valid
+        if (isNaN(fromDate.getTime()) || isNaN(untilDate.getTime())) {
+            dateError.style.display = 'block';
+            dateError.innerHTML = '❌ Please enter valid dates';
+            submitBtn.disabled = true;
+            return false;
+        }
+
+        // Check if from date is before until date
+        if (fromDate >= untilDate) {
+            dateError.style.display = 'block';
+            dateError.innerHTML = '❌ Valid From must be before Valid Until';
+            submitBtn.disabled = true;
+            return false;
+        }
+
+        // Check if until date is in the past
+        if (untilDate < now) {
+            dateError.style.display = 'block';
+            dateError.innerHTML = '❌ Valid Until cannot be in the past';
+            submitBtn.disabled = true;
+            return false;
+        }
+
+        // Warning if from date is in the past
+        if (fromDate < now) {
+            dateWarning.style.display = 'block';
+            dateWarningMessage.innerHTML = '⚠️ Valid From is in the past. The link will be active immediately.';
+        }
+
+        return true;
+    }
+
+    function setDateRange(value, unit) {
+        const now = new Date();
+        const fromDate = new Date(now);
+        const untilDate = new Date(now);
+
+        if (unit === 'days') {
+            untilDate.setDate(now.getDate() + value);
+        } else if (unit === 'year') {
+            untilDate.setFullYear(now.getFullYear() + value);
+        }
+
+        document.getElementById('validFrom').value = formatDateForInput(fromDate);
+        document.getElementById('validUntil').value = formatDateForInput(untilDate);
+
+        validateDates();
+    }
+
+    function clearDates() {
+        document.getElementById('validFrom').value = '';
+        document.getElementById('validUntil').value = '';
+        validateDates();
+    }
+
+    function formatDateForInput(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
+    function validateForm() {
+        return validateDates();
+    }
+
+    function confirmDelete(linkId) {
+        if (confirm('Are you sure you want to delete this link? This action cannot be undone.')) {
+            window.location.href = '/links/delete/' + linkId;
+        }
+    }
+
+    function validateUrl(input) {
+        const url = input.value;
+        const urlError = document.getElementById('urlError');
+        const urlWarning = document.getElementById('urlWarning');
+
+        // Basic URL validation
+        const pattern = /^(http|https):\/\/[^ "]+$/;
+
+        if (url && !pattern.test(url)) {
+            input.classList.add('is-invalid');
+            urlError.style.display = 'block';
+            urlError.innerHTML = '❌ URL must start with http:// or https://';
+            return false;
+        } else if (url) {
+            input.classList.remove('is-invalid');
+            urlError.style.display = 'none';
+
+            // Check for common URL issues
+            if (url.includes('bit.ly') || url.includes('tinyurl.com') || url.includes('goo.gl')) {
+                urlWarning.innerHTML = '⚠️ This appears to be a shortened URL already';
+            } else {
+                urlWarning.innerHTML = '';
+            }
+            return true;
+        } else {
+            input.classList.remove('is-invalid');
+            urlError.style.display = 'none';
+            urlWarning.innerHTML = '';
+            return false;
+        }
+    }
+</script>
+</body>
+</html>

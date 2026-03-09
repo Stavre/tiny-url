@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tiny URL replica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .form-container {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h2>Tiny Url Replica</h2>
+
+    <!-- Form with CSRF token -->
+    <form action="#" th:action="@{/anonymous/create-link/add}" method="post" th:object="${formData}">
+
+        <!-- CSRF Token (Spring Security) -->
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+
+        <!-- Alternative CSRF token input if using different format -->
+        <!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" /> -->
+
+        <div class="form-group">
+            <label for="inputField">Enter something:</label>
+            <input type="text" id="inputField" name="link" placeholder="Type here..." required />
+        </div>
+
+        <div class="form-group">
+            <button type="submit">Create short link</button>
+        </div>
+    </form>
+
+    <!-- Optional: Display message if present -->
+    <div th:if="${message}" th:text="${message}" style="margin-top: 20px; color: #666;"></div>
+</div>
+</body>
+</html>
