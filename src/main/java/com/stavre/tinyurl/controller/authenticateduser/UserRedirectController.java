@@ -17,7 +17,6 @@ public class UserRedirectController {
     private final AuthenticatedUserLinkService authenticatedUserLinkService;
     private final LinkAccessService linkAccessService;
 
-
     @GetMapping("/user/{shortUrl}")
     public String redirectUserLink(@PathVariable String shortUrl) {
         Optional<String> originalUrl = authenticatedUserLinkService.getOriginalUrl(shortUrl);

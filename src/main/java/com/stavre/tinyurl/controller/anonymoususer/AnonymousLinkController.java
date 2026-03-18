@@ -1,6 +1,5 @@
 package com.stavre.tinyurl.controller.anonymoususer;
 
-
 import com.stavre.tinyurl.entity.anonymoususer.AnonymousLinkEntity;
 import com.stavre.tinyurl.service.RedirectLinkService;
 import com.stavre.tinyurl.service.anonymoususer.AnonymousUserLinkService;

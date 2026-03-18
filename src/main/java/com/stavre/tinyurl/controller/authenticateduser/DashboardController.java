@@ -11,9 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import java.util.List;
-
 
 @Controller
 @RequestMapping("/user")
@@ -22,9 +20,7 @@ public class DashboardController {
 
     private final LinkStatisticsService linkStatisticsService;
     private final RedirectLinkService redirectLinkService;
-
     private final AuthenticatedUserLinkService linkService;
-
 
     @GetMapping("/dashboard")
     public String getDashboard(Authentication authentication, Model model) {
@@ -32,7 +28,7 @@ public class DashboardController {
         String username = authentication.getName();
 
         LinkCountDto linkCount = linkStatisticsService.getLinkCount(username);
-        List <AuthenticatedUserLinkEntity> userLinks = linkService.getUserLinks(username);
+        List<AuthenticatedUserLinkEntity> userLinks = linkService.getUserLinks(username);
 
         model.addAttribute("linkCount", linkCount);
         model.addAttribute("links", userLinks);

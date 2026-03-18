@@ -4,7 +4,6 @@ import com.stavre.tinyurl.dto.authenticateduser.CreateLinkRequestDto;
 import com.stavre.tinyurl.entity.anonymoususer.AnonymousLinkEntity;
 import com.stavre.tinyurl.entity.authenticateduser.AuthenticatedUserLinkEntity;
 import org.springframework.stereotype.Component;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -27,7 +26,8 @@ public class LinkFactory {
     public AuthenticatedUserLinkEntity createUserLink(CreateLinkRequestDto requestDto) {
         LocalDateTime currentTimestamp = LocalDateTime.now();
         LocalDateTime newValidFrom = requestDto.validFrom() != null ? requestDto.validFrom() : currentTimestamp;
-        LocalDateTime newValidUntil = requestDto.validUntil() != null ? requestDto.validUntil() : currentTimestamp.plusDays(5);
+        LocalDateTime newValidUntil = requestDto.validUntil() != null
+                ? requestDto.validUntil() : currentTimestamp.plusDays(5);
         AuthenticatedUserLinkEntity link = new AuthenticatedUserLinkEntity();
 
         link.setOriginalUrl(requestDto.url());

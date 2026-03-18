@@ -4,7 +4,6 @@ import com.stavre.tinyurl.entity.anonymoususer.AnonymousLinkEntity;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -14,5 +13,6 @@ public interface AnonymousUserLinkRepository extends JpaRepository<AnonymousLink
 
     Optional<AnonymousLinkEntity> findLinkById(UUID id);
 
+    @Override
     List<AnonymousLinkEntity> findAllById(@NonNull Iterable<UUID> uuids);
 }

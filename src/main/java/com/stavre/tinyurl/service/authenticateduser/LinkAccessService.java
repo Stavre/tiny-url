@@ -4,7 +4,6 @@ import com.stavre.tinyurl.entity.authenticateduser.LinkAccessEntity;
 import com.stavre.tinyurl.repository.authenticateduser.LinkAccessRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
