@@ -1,11 +1,10 @@
-package com.stavre.tinyurl.entity.authenticateduser;
+package com.stavre.tinyurl.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
@@ -14,9 +13,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Entity
 @Data
-@Builder
 @AllArgsConstructor
-public class AuthenticatedUserLinkEntity {
+public class Link {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

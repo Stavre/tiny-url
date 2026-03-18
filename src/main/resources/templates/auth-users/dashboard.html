@@ -11,8 +11,8 @@
 <nav>
     <div class="nav-container">
         <a href="/" class="logo">tinyurl</a>
-        <a href="/user/dashboard" class="dashboard">dashboard</a>
-        <a href="/user/create-link" class="create-link">+ create new link</a>
+        <a href="/dashboard" class="dashboard">dashboard</a>
+        <a href="/create-link" class="create-link">+ create new link</a>
     </div>
 </nav>
 
@@ -112,15 +112,15 @@
 
                     <!-- Actions -->
                     <td class="actions">
-                        <a th:href="@{/links/stats/{id}(id=${link.shortLinkId})}" class="btn btn-stats tooltip">
+                        <a th:href="@{/link-stats/{id}(id=${link.shortLinkId})}" class="btn btn-stats tooltip">
                             📊 Stats
                             <span class="tooltip-text">View statistics</span>
                         </a>
-                        <a th:href="@{/user/edit-link/{id}(id=${link.shortLinkId})}" class="btn btn-edit tooltip">
+                        <a th:href="@{/update-link/{id}(id=${link.shortLinkId})}" class="btn btn-edit tooltip">
                             ✏️ Edit
                             <span class="tooltip-text">Edit link</span>
                         </a>
-                        <form th:action="@{/user/delete-link/{id}(id=${link.shortLinkId})}"
+                        <form th:action="@{/delete-link/{id}(id=${link.shortLinkId})}"
                               method="post"
                               style="display: inline;"
                               onsubmit="return confirmDelete(event, this)">

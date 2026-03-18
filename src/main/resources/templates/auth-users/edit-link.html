@@ -12,8 +12,8 @@
 <nav>
     <div class="nav-container">
         <a href="/" class="logo">tinyurl</a>
-        <a href="/user/dashboard" class="dashboard">dashboard</a>
-        <a href="/user/create-link" class="create-link">+ create new link</a>
+        <a href="/dashboard" class="dashboard">dashboard</a>
+        <a href="/create-link" class="create-link">+ create new link</a>
     </div>
 </nav>
 
@@ -88,7 +88,7 @@
             </div>
 
             <!-- Edit Form -->
-            <form th:action="@{/user/update-link}" method="post" id="editForm" onsubmit="return validateForm()">
+            <form th:action="@{/update-link}" method="post" id="editForm" onsubmit="return validateForm()">
                 <!-- Hidden ID field -->
                 <input type="hidden" name="id" th:value="${link.shortLinkId}"/>
 

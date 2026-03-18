@@ -11,14 +11,14 @@
     <section class="card" aria-labelledby="page-title">
         <h1 id="page-title" class="title">Tiny URL Replica</h1>
 
-        <form th:action="@{/anonymous/create-link/add}" th:object="${formData}" method="post" class="form" novalidate>
+        <form th:action="@{/create-link}" th:object="${formData}" method="post" class="form" novalidate>
             <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
 
             <div class="form-row">
                 <label for="inputField" class="label">Enter something</label>
                 <input
                         id="inputField"
-                        name="link"
+                        name="url"
                         type="text"
                         class="input"
                         placeholder="Type here…"

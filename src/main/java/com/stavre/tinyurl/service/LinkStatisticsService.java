@@ -1,8 +1,7 @@
-package com.stavre.tinyurl.service.authenticateduser;
+package com.stavre.tinyurl.service;
 
-import com.stavre.tinyurl.dto.authenticateduser.LinkCountDto;
-import com.stavre.tinyurl.repository.authenticateduser.AuthenticatedUserLinkRepository;
-import com.stavre.tinyurl.repository.authenticateduser.LinkUserRepository;
+import com.stavre.tinyurl.dto.LinkCountDto;
+import com.stavre.tinyurl.repository.LinkUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 public class LinkStatisticsService {
 
     private final LinkUserRepository linkUserRepository;
-    private final AuthenticatedUserLinkRepository linkRepository;
 
     public LinkCountDto getLinkCount(String username) {
         long totalLinks = linkUserRepository.countByUserNameIs(username);

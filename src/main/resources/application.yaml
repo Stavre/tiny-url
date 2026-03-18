@@ -23,5 +23,5 @@ spring:
 
 app:
   redirect:
-    anonymous: "http://localhost:8080/redirect/anonymous/"
-    authenticated: "http://localhost:8080/redirect/user/"
+    anonymous: "http://localhost:8080/redirect/"
+    authenticated: "http://localhost:8080/redirect/"

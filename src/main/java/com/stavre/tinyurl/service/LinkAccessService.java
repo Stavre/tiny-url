@@ -1,7 +1,7 @@
-package com.stavre.tinyurl.service.authenticateduser;
+package com.stavre.tinyurl.service;
 
-import com.stavre.tinyurl.entity.authenticateduser.LinkAccessEntity;
-import com.stavre.tinyurl.repository.authenticateduser.LinkAccessRepository;
+import com.stavre.tinyurl.entity.LinkAccess;
+import com.stavre.tinyurl.repository.LinkAccessRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -14,7 +14,7 @@ public class LinkAccessService {
     private final LinkAccessRepository linkAccessRepository;
 
     public void recordAccess(String shortUrl) {
-        LinkAccessEntity accessLog = new LinkAccessEntity();
+        LinkAccess accessLog = new LinkAccess();
         accessLog.setAccessedAt(LocalDateTime.now());
         accessLog.setLinkId(UUID.fromString(shortUrl));
         linkAccessRepository.save(accessLog);

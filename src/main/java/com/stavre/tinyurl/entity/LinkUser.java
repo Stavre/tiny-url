@@ -1,4 +1,4 @@
-package com.stavre.tinyurl.entity.authenticateduser;
+package com.stavre.tinyurl.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-public class LinkUserEntity {
+public class LinkUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
