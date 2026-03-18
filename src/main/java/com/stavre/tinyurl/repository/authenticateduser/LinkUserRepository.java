@@ -15,16 +15,16 @@ public interface LinkUserRepository extends JpaRepository<LinkUserEntity, Long> 
     long countByUserNameIs(String userName);
 
     @Query(value = "SELECT COUNT(*) as active_links_count " +
-            "FROM authenticated_user.link l " +
-            "JOIN authenticated_user.link_user lu ON l.short_link_id = lu.link_id " +
+            "FROM Authenticated_User_Link_Entity l " +
+            "JOIN Link_User_Entity lu ON l.short_link_id = lu.link_id " +
             "WHERE lu.user_name = :userName " +
             "  AND l.valid_from <= CURRENT_TIMESTAMP " +
             "  AND l.valid_until > CURRENT_TIMESTAMP;", nativeQuery = true)
     long countActiveLinksByUserName(@Param("userName") String username);
 
     @Query(value = "SELECT COUNT(*) as active_links_count " +
-            "FROM authenticated_user.link l " +
-            "JOIN authenticated_user.link_user lu ON l.short_link_id = lu.link_id " +
+            "FROM Authenticated_User_Link_Entity l " +
+            "JOIN Link_User_Entity lu ON l.short_link_id = lu.link_id " +
             "WHERE lu.user_name = :userName " +
             "  AND (l.valid_from > CURRENT_TIMESTAMP " +
             "  OR l.valid_until < CURRENT_TIMESTAMP);", nativeQuery = true)

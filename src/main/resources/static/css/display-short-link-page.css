@@ -1,0 +1,269 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        /* Navigation - full width background */
+        nav {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+            font-family: system-ui, sans-serif;
+        }
+
+        /* Navigation inner - constrained width */
+        .nav-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 1rem 20px;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-container a {
+            text-decoration: none;
+        }
+
+        .nav-container .logo {
+            color: #667eea;
+            font-weight: 600;
+            margin-right: auto;
+            font-size: 1.2rem;
+        }
+
+        .nav-container .dashboard {
+            color: #4a5568;
+            padding: 0.5rem 0;
+        }
+
+        .nav-container .create-link {
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+
+        .nav-container .create-link:hover {
+            background: #5a67d8;
+        }
+
+        /* Main container - matches nav width */
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .card-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .card-body {
+            padding: 40px;
+        }
+
+        .detail-item {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .detail-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .detail-label {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6c757d;
+            margin-bottom: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-value {
+            font-size: 18px;
+            color: #2c3e50;
+            word-break: break-all;
+        }
+
+        .short-url {
+            font-size: 24px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .short-url a {
+            color: #667eea;
+            text-decoration: none;
+            border-bottom: 2px dashed #667eea;
+            padding-bottom: 2px;
+        }
+
+        .short-url a:hover {
+            color: #764ba2;
+            border-bottom-color: #764ba2;
+        }
+
+        .date-value {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .date-value i {
+            color: #667eea;
+            font-size: 20px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-valid {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-expired {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .copy-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            transition: background 0.3s;
+        }
+
+        .copy-button:hover {
+            background: #218838;
+        }
+
+        .copy-button.copied {
+            background: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 20px;
+            }
+
+            .short-url {
+                font-size: 18px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .copy-button {
+                margin-left: 0;
+                width: fit-content;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .nav-container {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .nav-container .logo {
+                width: 100%;
+                text-align: center;
+                margin-right: 0;
+            }
+
+            .detail-label {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+        }

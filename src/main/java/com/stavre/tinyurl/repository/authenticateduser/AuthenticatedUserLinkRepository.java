@@ -17,6 +17,6 @@ public interface AuthenticatedUserLinkRepository extends JpaRepository<Authentic
 
     void deleteAllByShortLinkId(UUID shortLinkId);
 
-    @Query(value = "Select * from authenticated_user.link where short_link_id in :uuids;", nativeQuery = true)
+    @Query(value = "Select * from Authenticated_User_Link_Entity where short_link_id in :uuids;", nativeQuery = true)
     List<AuthenticatedUserLinkEntity> findAllLinksByShortLinkIds(@NonNull Iterable<UUID> uuids);
 }

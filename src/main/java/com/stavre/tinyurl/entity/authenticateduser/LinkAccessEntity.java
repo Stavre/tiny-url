@@ -8,7 +8,6 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(schema = "authenticated_user", name = "access_log")
 public class LinkAccessEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

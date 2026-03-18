@@ -2,14 +2,12 @@ package com.stavre.tinyurl.entity.anonymoususer;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Entity
 @Data
-@Table(schema = "anonymous", name = "link")
 @Builder
 @AllArgsConstructor
 public class AnonymousLinkEntity {

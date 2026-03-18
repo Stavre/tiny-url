@@ -5,15 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Entity
 @Data
-@Table(schema = "authenticated_user", name = "link")
 @Builder
 @AllArgsConstructor
 public class AuthenticatedUserLinkEntity {
