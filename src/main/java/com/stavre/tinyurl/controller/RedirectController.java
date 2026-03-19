@@ -12,12 +12,12 @@ import java.util.Optional;
 @Controller
 public class RedirectController {
 
-    private final LinkService authenticatedUserLinkService;
+    private final LinkService linkService;
     private final LinkAccessService linkAccessService;
 
     @GetMapping("/redirect/{shortUrl}")
     public String redirectUserLink(@PathVariable String shortUrl) {
-        Optional<String> originalUrl = authenticatedUserLinkService.getOriginalUrl(shortUrl);
+        Optional<String> originalUrl = linkService.getOriginalUrl(shortUrl);
 
         if (originalUrl.isEmpty()) {
             return "redirect:/no-link-found";

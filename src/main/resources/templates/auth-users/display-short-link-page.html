@@ -49,21 +49,21 @@
                 </div>
             </div>
 
-            <!-- Valid Until Section -->
+            <!-- Active Until Section -->
             <div class="detail-item">
                 <div class="detail-label">
-                    <span>⏰ Valid Until</span>
+                    <span>⏰ Active Until</span>
                     <!-- Status Badge based on validity -->
                     <span class="status-badge"
-                          th:classappend="${link.validUntil != null and link.validUntil.isAfter(T(java.time.LocalDateTime).now())} ? 'status-valid' : 'status-expired'"
-                          th:text="${link.validUntil != null and link.validUntil.isAfter(T(java.time.LocalDateTime).now())} ? '✓ Valid' : '✗ Expired'">
+                          th:classappend="${link.activeUntil != null and link.activeUntil.isAfter(T(java.time.LocalDateTime).now())} ? 'status-valid' : 'status-expired'"
+                          th:text="${link.activeUntil != null and link.activeUntil.isAfter(T(java.time.LocalDateTime).now())} ? '✓ Valid' : '✗ Expired'">
                         </span>
                 </div>
-                <div class="detail-value date-value" th:if="${link.validUntil != null}">
+                <div class="detail-value date-value" th:if="${link.activeUntil != null}">
                     <i>⌛</i>
-                    <span th:text="${#temporals.format(link.validUntil, 'dd MMMM yyyy, HH:mm:ss')}"></span>
+                    <span th:text="${#temporals.format(link.activeUntil, 'dd MMMM yyyy, HH:mm:ss')}"></span>
                 </div>
-                <div class="detail-value date-value" th:unless="${link.validUntil != null}">
+                <div class="detail-value date-value" th:unless="${link.activeUntil != null}">
                     <i>∞</i>
                     <span>Never expires (permanent link)</span>
                 </div>

@@ -30,7 +30,6 @@ public class LinkController {
         boolean isAnonymousUser = authentication == null;
         if (isAnonymousUser) {
             return "anonymous-users/create-link.html";
-
         }
         return "auth-users/create-link.html";
     }
@@ -70,8 +69,8 @@ public class LinkController {
     }
 
     @PostMapping("/update-link")
-    public String updateLink(UpdateLinkRequestDto requestDto, Model model) {
-        Optional<Link> updatedLink = linkService.updateUserLink(requestDto);
+    public String updateLink(String shortLinkId, UpdateLinkRequestDto requestDto, Model model) {
+        Optional<Link> updatedLink = linkService.updateUserLink(shortLinkId, requestDto);
 
         if (updatedLink.isEmpty()) {
             return "no-link-found.html";
@@ -88,7 +87,7 @@ public class LinkController {
     @Transactional
     @PostMapping("/delete-link/{linkId}")
     public String deleteLink(@PathVariable String linkId) {
-        linkService.deleteLink(linkId);
+        linkService.deleteUserLink(linkId);
         return "redirect:/dashboard";
     }
 }

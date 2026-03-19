@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('linkForm');
 
   // Restore visibility if server returned values
-  if (document.getElementById('validFrom').value || document.getElementById('validUntil').value) {
+  if (document.getElementById('activeFrom').value || document.getElementById('activeUntil').value) {
     checkbox.checked = true;
     dateFields.classList.add('visible');
     dateFields.setAttribute('aria-hidden', 'false');
@@ -16,15 +16,15 @@ document.addEventListener('DOMContentLoaded', function () {
     dateFields.setAttribute('aria-hidden', String(!visible));
     if (visible) fillDefaultDatesIfEmpty();
     else {
-      document.getElementById('validFrom').value = '';
-      document.getElementById('validUntil').value = '';
+      document.getElementById('activeFrom').value = '';
+      document.getElementById('activeUntil').value = '';
     }
   });
 
   function fillDefaultDatesIfEmpty() {
     const now = new Date();
-    const fromInput = document.getElementById('validFrom');
-    const untilInput = document.getElementById('validUntil');
+    const fromInput = document.getElementById('activeFrom');
+    const untilInput = document.getElementById('activeUntil');
 
     if (!fromInput.value) {
       const fromDate = new Date(now);
@@ -41,8 +41,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   form.addEventListener('submit', function (e) {
     const url = document.getElementById('url').value.trim();
-    const validFrom = document.getElementById('validFrom').value;
-    const validUntil = document.getElementById('validUntil').value;
+    const activeFrom = document.getElementById('activeFrom').value;
+    const activeUntil = document.getElementById('activeUntil').value;
 
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       e.preventDefault();
@@ -50,17 +50,17 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    if (validFrom && validUntil) {
-      const fromDate = new Date(validFrom);
-      const untilDate = new Date(validUntil);
+    if (activeFrom && activeUntil) {
+      const fromDate = new Date(activeFrom);
+      const untilDate = new Date(activeUntil);
       if (fromDate >= untilDate) {
         e.preventDefault();
-        alert('Valid From must be before Valid Until');
+        alert('Active From must be before Active Until');
         return;
       }
       if (untilDate < new Date()) {
         e.preventDefault();
-        alert('Valid Until cannot be in the past');
+        alert('Active Until cannot be in the past');
         return;
       }
     }

@@ -15,17 +15,18 @@ public class LinkFactory {
         link.setShortLinkId(UUID.randomUUID());
         link.setOriginalUrl(url);
         link.setCreatedAt(LocalDateTime.now());
-        link.setValidFrom(LocalDateTime.now());
-        link.setValidUntil(LocalDateTime.now().plusDays(3));
+        link.setActiveFrom(LocalDateTime.now());
+        link.setActiveUntil(LocalDateTime.now().plusDays(3));
+        link.setRemoveAt(LocalDateTime.now().plusDays(3));
 
         return link;
     }
 
     public Link createUserLink(CreateLinkRequestDto requestDto) {
         LocalDateTime currentTimestamp = LocalDateTime.now();
-        LocalDateTime newValidFrom = requestDto.validFrom() != null ? requestDto.validFrom() : currentTimestamp;
-        LocalDateTime newValidUntil = requestDto.validUntil() != null
-                ? requestDto.validUntil() : currentTimestamp.plusDays(5);
+        LocalDateTime newactiveFrom = requestDto.activeFrom() != null ? requestDto.activeFrom() : currentTimestamp;
+        LocalDateTime newactiveUntil = requestDto.activeUntil() != null
+                ? requestDto.activeUntil() : currentTimestamp.plusDays(5);
 
         Link link = new Link();
 
@@ -33,10 +34,9 @@ public class LinkFactory {
         link.setShortLinkId(UUID.randomUUID());
         link.setCreatedAt(currentTimestamp);
         link.setUpdatedAt(null);
-        link.setValidFrom(newValidFrom);
-        link.setValidUntil(newValidUntil);
+        link.setActiveFrom(newactiveFrom);
+        link.setActiveUntil(newactiveUntil);
         link.setDescription(requestDto.description());
-        link.setMarkedForDeletion(false);
 
         return link;
     }

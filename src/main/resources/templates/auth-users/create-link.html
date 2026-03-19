@@ -52,11 +52,11 @@
             </div>
 
             <div id="dateFields" class="date-fields" aria-hidden="true">
-                <label for="validFrom" class="label">valid from</label>
-                <input id="validFrom" name="validFrom" type="datetime-local" th:value="${validFrom}" />
+                <label for="activeFrom" class="label">Active From</label>
+                <input id="activeFrom" name="activeFrom" type="datetime-local" th:value="${activeFrom}" />
 
-                <label for="validUntil" class="label">valid until</label>
-                <input id="validUntil" name="validUntil" type="datetime-local" th:value="${validUntil}" />
+                <label for="activeUntil" class="label">Active Until</label>
+                <input id="activeUntil" name="activeUntil" type="datetime-local" th:value="${activeUntil}" />
 
                 <div class="hint center">leave both empty for a three-day valid link starting now</div>
             </div>

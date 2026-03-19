@@ -51,8 +51,8 @@
                     <th>Description</th>
                     <th>Created</th>
                     <th>Updated</th>
-                    <th>Valid From</th>
-                    <th>Valid Until</th>
+                    <th>Active From</th>
+                    <th>Active Until</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -91,22 +91,22 @@
                         2024-01-15
                     </td>
 
-                    <!-- Valid From -->
-                    <td th:text="${link.validFrom != null} ? ${#temporals.format(link.validFrom, 'yyyy-MM-dd')} : '-'">
+                    <!-- Active From -->
+                    <td th:text="${link.activeFrom != null} ? ${#temporals.format(link.activeFrom, 'yyyy-MM-dd')} : '-'">
                         2024-01-15
                     </td>
 
-                    <!-- Valid Until -->
-                    <td th:text="${link.validUntil != null} ? ${#temporals.format(link.validUntil, 'yyyy-MM-dd')} : 'Never'">
+                    <!-- Active Until -->
+                    <td th:text="${link.activeUntil != null} ? ${#temporals.format(link.activeUntil, 'yyyy-MM-dd')} : 'Never'">
                         2024-02-15
                     </td>
 
                     <!-- Status -->
                     <td>
-                                    <span class="badge" th:classappend="${link.validUntil == null} ? 'badge-permanent' :
-                                                                           (${link.validUntil.isAfter(T(java.time.LocalDateTime).now())} ? 'badge-valid' : 'badge-expired')"
-                                          th:text="${link.validUntil == null} ? 'Permanent' :
-                                                   (${link.validUntil.isAfter(T(java.time.LocalDateTime).now())} ? 'Active' : 'Expired')">
+                                    <span class="badge" th:classappend="${link.activeUntil == null} ? 'badge-permanent' :
+                                                                           (${link.activeUntil.isAfter(T(java.time.LocalDateTime).now())} ? 'badge-valid' : 'badge-expired')"
+                                          th:text="${link.activeUntil == null} ? 'Permanent' :
+                                                   (${link.activeUntil.isAfter(T(java.time.LocalDateTime).now())} ? 'Active' : 'Expired')">
                                     </span>
                     </td>
 

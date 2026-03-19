@@ -49,10 +49,10 @@
                     <div class="info-label">Short URL:</div>
                     <div class="info-value">
                         <span class="short-url" th:text="${redirectLinkFormatter.getRedirectLink(link)}"></span>
-                        <span class="badge" th:classappend="${link.validUntil == null} ? 'badge-permanent' :
-                                                                   (${link.validUntil.isAfter(T(java.time.LocalDateTime).now())} ? 'badge-active' : 'badge-expired')"
-                              th:text="${link.validUntil == null} ? 'Permanent' :
-                                           (${link.validUntil.isAfter(T(java.time.LocalDateTime).now())} ? 'Active' : 'Expired')">
+                        <span class="badge" th:classappend="${link.activeUntil == null} ? 'badge-permanent' :
+                                                                   (${link.activeUntil.isAfter(T(java.time.LocalDateTime).now())} ? 'badge-active' : 'badge-expired')"
+                              th:text="${link.activeUntil == null} ? 'Permanent' :
+                                           (${link.activeUntil.isAfter(T(java.time.LocalDateTime).now())} ? 'Active' : 'Expired')">
                             </span>
                     </div>
 
@@ -68,13 +68,13 @@
                     <div class="info-value"
                          th:text="${link.updatedAt != null} ? ${#temporals.format(link.updatedAt, 'dd MMM yyyy, HH:mm')} : 'Never'"></div>
 
-                    <div class="info-label">Valid From:</div>
+                    <div class="info-label">Active From:</div>
                     <div class="info-value"
-                         th:text="${link.validFrom != null} ? ${#temporals.format(link.validFrom, 'dd MMM yyyy, HH:mm')} : 'Immediately'"></div>
+                         th:text="${link.activeFrom != null} ? ${#temporals.format(link.activeFrom, 'dd MMM yyyy, HH:mm')} : 'Immediately'"></div>
 
-                    <div class="info-label">Valid Until:</div>
+                    <div class="info-label">Active Until:</div>
                     <div class="info-value"
-                         th:text="${link.validUntil != null} ? ${#temporals.format(link.validUntil, 'dd MMM yyyy, HH:mm')} : 'Never (permanent)'"></div>
+                         th:text="${link.activeUntil != null} ? ${#temporals.format(link.activeUntil, 'dd MMM yyyy, HH:mm')} : 'Never (permanent)'"></div>
                 </div>
             </div>
 
@@ -90,7 +90,7 @@
             <!-- Edit Form -->
             <form th:action="@{/update-link}" method="post" id="editForm" onsubmit="return validateForm()">
                 <!-- Hidden ID field -->
-                <input type="hidden" name="id" th:value="${link.shortLinkId}"/>
+                <input type="hidden" name="shortLinkId" th:value="${link.shortLinkId}"/>
 
                 <div class="form-group">
                     <label for="originalUrl">
@@ -130,27 +130,27 @@
 
                     <div class="date-fields">
                         <div class="alert alert-warning" style="margin-bottom: 1rem;">
-                            <strong>Note:</strong> Valid From must be before Valid Until. Leave both empty for permanent
+                            <strong>Note:</strong> Active From must be before Active Until. Leave both empty for permanent
                             links.
                         </div>
 
                         <div class="row">
                             <div class="form-group">
-                                <label for="validFrom">Valid From</label>
+                                <label for="activeFrom">Active From</label>
                                 <input type="datetime-local"
-                                       id="validFrom"
-                                       name="validFrom"
-                                       th:value="${ (link.validFrom != null) ? #temporals.format(link.validFrom, 'yyyy-MM-dd''T''HH:mm') : '' }"
+                                       id="activeFrom"
+                                       name="activeFrom"
+                                       th:value="${ (link.activeFrom != null) ? #temporals.format(link.activeFrom, 'yyyy-MM-dd''T''HH:mm') : '' }"
                                        onchange="validateDates()">
                                 <div class="hint">When the link becomes active.</div>
                             </div>
 
                             <div class="form-group">
-                                <label for="validUntil">Valid Until</label>
+                                <label for="activeUntil">Active Until</label>
                                 <input type="datetime-local"
-                                       id="validUntil"
-                                       name="validUntil"
-                                       th:value="${ (link.validUntil != null) ? #temporals.format(link.validUntil, 'yyyy-MM-dd''T''HH:mm') : '' }"
+                                       id="activeUntil"
+                                       name="activeUntil"
+                                       th:value="${ (link.activeUntil != null) ? #temporals.format(link.activeUntil, 'yyyy-MM-dd''T''HH:mm') : '' }"
                                        onchange="validateDates()">
                                 <div class="hint">When the link expires.</div>
                             </div>

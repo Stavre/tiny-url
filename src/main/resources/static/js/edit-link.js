@@ -103,8 +103,8 @@
     })();
 
     function validateDates() {
-        const validFrom = document.getElementById('validFrom').value;
-        const validUntil = document.getElementById('validUntil').value;
+        const activeFrom = document.getElementById('activeFrom').value;
+        const activeUntil = document.getElementById('activeUntil').value;
         const dateError = document.getElementById('dateError');
         const dateWarning = document.getElementById('dateWarning');
         const dateWarningMessage = document.getElementById('dateWarningMessage');
@@ -116,20 +116,20 @@
         submitBtn.disabled = false;
 
         // If both are empty, it's valid (permanent link)
-        if (!validFrom && !validUntil) {
+        if (!activeFrom && !activeUntil) {
             return true;
         }
 
         // If one is filled but not both
-        if ((validFrom && !validUntil) || (!validFrom && validUntil)) {
+        if ((activeFrom && !activeUntil) || (!activeFrom && activeUntil)) {
             dateError.style.display = 'block';
-            dateError.innerHTML = '❌ Both Valid From and Valid Until must be filled together';
+            dateError.innerHTML = '❌ Both Active From and Active Until must be filled together';
             submitBtn.disabled = true;
             return false;
         }
 
-        const fromDate = new Date(validFrom);
-        const untilDate = new Date(validUntil);
+        const fromDate = new Date(activeFrom);
+        const untilDate = new Date(activeUntil);
         const now = new Date();
 
         // Check if dates are valid
@@ -143,7 +143,7 @@
         // Check if from date is before until date
         if (fromDate >= untilDate) {
             dateError.style.display = 'block';
-            dateError.innerHTML = '❌ Valid From must be before Valid Until';
+            dateError.innerHTML = '❌ Active From must be before Active Until';
             submitBtn.disabled = true;
             return false;
         }
@@ -151,7 +151,7 @@
         // Check if until date is in the past
         if (untilDate < now) {
             dateError.style.display = 'block';
-            dateError.innerHTML = '❌ Valid Until cannot be in the past';
+            dateError.innerHTML = '❌ Active Until cannot be in the past';
             submitBtn.disabled = true;
             return false;
         }
@@ -159,7 +159,7 @@
         // Warning if from date is in the past
         if (fromDate < now) {
             dateWarning.style.display = 'block';
-            dateWarningMessage.innerHTML = '⚠️ Valid From is in the past. The link will be active immediately.';
+            dateWarningMessage.innerHTML = '⚠️ Active From is in the past. The link will be active immediately.';
         }
 
         return true;
@@ -176,15 +176,15 @@
             untilDate.setFullYear(now.getFullYear() + value);
         }
 
-        document.getElementById('validFrom').value = formatDateForInput(fromDate);
-        document.getElementById('validUntil').value = formatDateForInput(untilDate);
+        document.getElementById('activeFrom').value = formatDateForInput(fromDate);
+        document.getElementById('activeUntil').value = formatDateForInput(untilDate);
 
         validateDates();
     }
 
     function clearDates() {
-        document.getElementById('validFrom').value = '';
-        document.getElementById('validUntil').value = '';
+        document.getElementById('activeFrom').value = '';
+        document.getElementById('activeUntil').value = '';
         validateDates();
     }
 

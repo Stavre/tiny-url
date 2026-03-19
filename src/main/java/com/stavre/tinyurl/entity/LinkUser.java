@@ -13,6 +13,6 @@ public class LinkUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private UUID linkId;
+    private UUID shortLinkId;
     private String userName;
 }

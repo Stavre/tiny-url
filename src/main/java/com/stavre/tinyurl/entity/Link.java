@@ -24,9 +24,13 @@ public class Link {
     private String originalUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private LocalDateTime validFrom;
-    private LocalDateTime validUntil;
+    private LocalDateTime activeFrom;
+    private LocalDateTime activeUntil;
+    private LocalDateTime removeAt;
     private String description;
-    private boolean markedForDeletion;
-    private boolean isLatest;
+
+    public void extendActivationPeriod() {
+        activeUntil = LocalDateTime.now().plusDays(3);
+        removeAt = LocalDateTime.now().plusDays(3);
+    }
 }
