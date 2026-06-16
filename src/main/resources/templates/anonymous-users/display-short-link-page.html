@@ -1,56 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Short Link Details</title>
-    <link rel="stylesheet" th:href="@{/css/details.css}" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>TinyURL — Short Link</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
-<main class="container">
-    <section class="card" aria-labelledby="page-title">
-        <header class="card-header">
-            <h1 id="page-title" class="title">🔗 Short Link Details</h1>
-            <p class="subtitle">View and manage your shortened URL</p>
-        </header>
+<div class="page centered">
+  <div class="container">
+    <div class="card">
+      <h1 class="card-title">Your short link is ready</h1>
+      <p class="card-subtitle">Copy it and share anywhere.</p>
 
-        <div class="card-body">
-            <div class="form-row">
-                <label class="label">Short URL</label>
-                <div class="value short-url">
-                    <a th:href="${redirectLinkFormatter.getRedirectLink(link)}"
-                       th:text="${redirectLinkFormatter.getRedirectLink(link)}"
-                       target="_blank" rel="noopener noreferrer"></a>
-                    <button type="button" id="copyBtn" class="btn small">📋 Copy</button>
-                </div>
-            </div>
+      <div class="url-box" th:with="url=${redirectBase + link.shortLinkId}">
+        <a th:href="${url}" th:text="${url}"
+           target="_blank" rel="noopener noreferrer"></a>
+        <button type="button" id="copyBtn" class="btn btn-secondary btn-sm">Copy</button>
+      </div>
 
-            <div class="form-row">
-                <label class="label">Created At</label>
-                <div class="value">
-                    <time th:text="${#temporals.format(link.createdAt, 'dd MMMM yyyy, HH:mm:ss')}"></time>
-                </div>
-            </div>
+      <p class="hint" th:if="${link.activeUntil != null}">
+        Expires <span th:text="${#temporals.format(link.activeUntil, 'dd MMM yyyy, HH:mm')}"></span>
+      </p>
 
-            <div class="form-row">
-                <label class="label">Active Until
-                    <span class="status"
-                          th:classappend="${link.activeUntil != null and link.activeUntil.isAfter(T(java.time.LocalDateTime).now())} ? ' valid' : ' expired'"
-                          th:text="${link.activeUntil != null and link.activeUntil.isAfter(T(java.time.LocalDateTime).now())} ? '✓ Valid' : '✗ Expired'">
-            </span>
-                </label>
-                <div class="value">
-                    <time th:text="${#temporals.format(link.activeUntil, 'dd MMMM yyyy, HH:mm:ss')}"></time>
-                </div>
-            </div>
-
-            <div class="actions">
-                <a class="btn" th:href="@{/create-link}">➕ Create New Link</a>
-            </div>
-        </div>
-    </section>
-</main>
-
-<script th:src="@{/js/details.js}" src="/js/details.js"></script>
+      <div class="btn-row">
+        <a th:href="@{/create-link}" class="btn btn-primary">Shorten another</a>
+      </div>
+      <p class="hint" style="text-align:center; margin-top:0.75rem;">
+        <a th:href="@{/login}">Log in</a> for link management features.
+      </p>
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/clipboard.js}"></script>
 </body>
 </html>

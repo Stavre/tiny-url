@@ -1,47 +1,27 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Link Not Found - TinyURL</title>
-    <link rel="stylesheet" href="/css/no-link-found.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>TinyURL — Link Not Found</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
-<div class="container">
-    <main style="background: none; box-shadow: none; padding: 0;">
-        <div class="error-container">
-            <div class="error-card">
-
-                <!-- Error code -->
-                <div class="error-code">404</div>
-
-                <!-- Error title -->
-                <h1 class="error-title">Link Not Found</h1>
-
-                <!-- Error message -->
-                <p class="error-message">
-                    The short link you're looking for doesn't exist or has been removed.
-                </p>
-
-                <!-- Error details section -->
-                <div class="error-details">
-                    <h3>Possible reasons:</h3>
-                    <ul>
-                        <li>The link may have expired (free links expire after 3 days)</li>
-                        <li>The link may have been removed by the owner</li>
-                        <li>The URL might be typed incorrectly</li>
-                    </ul>
-                </div>
-
-                <!-- Action buttons -->
-                <div class="action-buttons">
-                    <a href="/create-link" class="btn btn-primary">
-                        Create New Link
-                    </a>
-                </div>
-            </div>
-        </div>
-    </main>
+<div class="page centered">
+  <div class="container">
+    <div class="error-page">
+      <div class="error-code">404</div>
+      <h1 class="error-title">Link not found</h1>
+      <p class="error-body">
+        This short link doesn't exist, has expired, or was removed.<br/>
+        Free links are active for 3 days after creation.
+      </p>
+      <div class="btn-row" style="justify-content:center;">
+        <a th:href="@{/create-link}" class="btn btn-primary">Create a new link</a>
+        <a th:href="@{/login}"       class="btn btn-secondary">Log in</a>
+      </div>
+    </div>
+  </div>
 </div>
 </body>
 </html>

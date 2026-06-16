@@ -1,5 +1,6 @@
 package com.stavre.tinyurl.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
@@ -8,7 +9,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Entity
@@ -20,17 +20,21 @@ public class Link {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private UUID shortLinkId;
+    @Column(unique = true)
+    private String shortLinkId;
     private String originalUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime activeFrom;
     private LocalDateTime activeUntil;
-    private LocalDateTime removeAt;
     private String description;
 
-    public void extendActivationPeriod() {
-        activeUntil = LocalDateTime.now().plusDays(3);
-        removeAt = LocalDateTime.now().plusDays(3);
+    public boolean isActive() {
+        LocalDateTime now = LocalDateTime.now();
+        if (activeFrom != null && now.isBefore(activeFrom)) {
+            return false;
+        }
+        return activeUntil == null || activeUntil.isAfter(now);
     }
+
 }

@@ -1,9 +1,17 @@
 package com.stavre.tinyurl.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-public record CreateLinkRequestDto(String url,
-                                   String description,
-                                   LocalDateTime activeFrom,
-                                   LocalDateTime activeUntil) {
+public record CreateLinkRequestDto(
+        @NotBlank(message = "URL is required")
+        @Size(max = 2048, message = "URL must not exceed 2048 characters")
+        @Pattern(regexp = "https?://.*", message = "URL must start with http:// or https://")
+        String url,
+        @Size(max = 255, message = "Description must not exceed 255 characters")
+        String description,
+        LocalDateTime activeFrom,
+        LocalDateTime activeUntil) {
 }

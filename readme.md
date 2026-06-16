@@ -1,54 +1,52 @@
-# Tiny URL
+# TinyURL
 
-Inspired by [this challenge](https://codingchallenges.fyi/challenges/challenge-url-shortener/)
+A Spring Boot URL shortener with anonymous and authenticated user flows.
 
-## User types
+## Features
 
-The app has two types of users: anonymous and authenticated.
-Anonymous users don't log in. They can only create 3-day valid links.
+- **Anonymous users** — create short links that expire in 3 days
+- **Authenticated users** — create short links with custom descriptions, activation windows, and a 5-day default expiration
+- Usage tracking and per-link statistics with an hourly bar chart
+- Dashboard with link counts (total / active / expired)
 
-Authenticated users have accounts they use to log in. They have a dashboard with their links.
-When creating links they can set the validity interval, as well as a short description.
-They can delete or edit their own links.
+## Running the App
 
-## Link generation
+```bash
+./gradlew bootRun
+```
 
-The shortened version isn't really that short. It's basically an UUID generated 
-by the app. Smarter approaches could have been used, but then I would have had to deal with collisions.
+The app starts on `http://localhost:8080`. The H2 in-memory database is seeded on startup with two test users and sample links.
 
-### Idempotency
+**Test credentials:**
 
-The challenge specifies creating links should be idempotent. There are some practical issues with that.
-Two different authenticated users must always get different short links even for the same long url.
-Otherwise, both users would have access to the same link. Additionally, this would create issues in
-logging link usage.
+| Username | Password |
+|----------|----------|
+| john     | password |
+| sam      | password |
 
-Idempotency would definitely work for anonymous links if they would not have a fixed 3-day validity period.
-It would be strange to create a link and have it expire in one day just because a stranger generated the same link two days ago.
+H2 console: `http://localhost:8080/h2-console` (JDBC URL: `jdbc:h2:mem:testdb`, user: `admin`, password: `admin`)
 
-## General architecture
+## Configuration
 
-This app is a simple spring boot app that uses Thymeleaf for template rendering and H2 as an in-memory database.
-Services, Controllers, Repositories and html templates are split between user types. This makes it easier to work
-only on one user-type feature, or to add a new type of user (maybe corporate user).
+Set `APP_BASE_URL` to change the redirect base in generated short links:
 
-### API
+```bash
+APP_BASE_URL=https://yourdomain.com ./gradlew bootRun
+```
 
-There are three main paths: /anonymous, /user, and /redirect.
+Defaults to `http://localhost:8080`.
 
-/anonymous and /redirect do not require authentication.
-/user does require authentication.
+## Quality Checks
 
-/redirect is used for redirecting short links to the original link.
+```bash
+./gradlew check          # tests + checkstyle + PMD + JaCoCo (>=70% coverage)
+./gradlew test           # tests only
+./gradlew checkstyleMain # main source style only
+```
 
+## Tech Stack
 
-## Differences between this solution and the challenge
-
-The challenge does not mention users or accounts, making the problem simpler than my approach
-(It hints at this possibility in the Going Further section).
-
-By having two different types of users we need to somehow differentiate between the links.
-For example, authenticated users might be interested in some sort of analytics regarding the link access.
-That means we would need to log usage of authenticated users' links.
-
-
+- Java 25, Spring Boot 4.0.3, Spring Security 7.x
+- Thymeleaf, H2 (in-memory), Hibernate
+- JUnit 5, Mockito, Spring Security Test
+- Checkstyle (Google Java Style), PMD 7.16, JaCoCo

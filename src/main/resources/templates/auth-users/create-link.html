@@ -1,73 +1,71 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Create Link - TinyURL</title>
-    <link rel="stylesheet" th:href="@{/css/create-auth-link.css}"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>TinyURL — Create Link</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
-<nav class="nav">
-    <div class="nav-inner">
-        <a class="logo" href="/">tinyurl</a>
-        <div class="nav-links">
-            <a href="/dashboard">dashboard</a>
-            <a href="/create-link">create new link</a>
+
+<th:block th:replace="~{fragments :: nav}"></th:block>
+
+<div class="page">
+  <div class="container">
+    <div class="card">
+      <h1 class="card-title">Create a short link</h1>
+      <p class="card-subtitle">Fill in the details below to generate your short URL.</p>
+
+      <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+      <div th:if="${error}"   class="alert alert-error"   th:text="${error}"></div>
+
+      <form id="linkForm" th:action="@{/create-link/auth}" method="post" novalidate>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <div class="field">
+          <label for="url">Original URL <span style="color:var(--danger)">*</span></label>
+          <input id="url" name="url" type="url"
+                 placeholder="https://example.com/very/long/url"
+                 th:value="${url}" required autofocus/>
+          <p class="hint">The long URL you want to shorten.</p>
         </div>
+
+        <div class="field">
+          <label for="description">Description</label>
+          <input id="description" name="description" type="text"
+                 placeholder="Optional short description"
+                 th:value="${description}"/>
+        </div>
+
+        <details class="date-toggle" id="dateDetails">
+          <summary>Set an expiration window (optional)</summary>
+          <div class="date-content">
+            <div class="date-row">
+              <div class="field">
+                <label for="activeFrom">Active From</label>
+                <input id="activeFrom" name="activeFrom" type="datetime-local" th:value="${activeFrom}"/>
+              </div>
+              <div class="field">
+                <label for="activeUntil">Active Until</label>
+                <input id="activeUntil" name="activeUntil" type="datetime-local" th:value="${activeUntil}"/>
+              </div>
+            </div>
+            <div class="preset-row">
+              <button type="button" id="clearDatesBtn" class="btn btn-secondary btn-sm">Clear dates</button>
+            </div>
+            <p class="hint">Leave blank to use the default (3 days from now).</p>
+          </div>
+        </details>
+
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">Create link</button>
+        </div>
+      </form>
     </div>
-</nav>
+  </div>
+</div>
 
-<main class="container">
-    <header class="page-header">
-        <h1 class="title">tinyurl</h1>
-        <p class="subtitle">create a short link</p>
-    </header>
-
-    <section class="card">
-        <div th:if="${success}" class="alert success" th:text="${success}"></div>
-        <div th:if="${error}" class="alert error" th:text="${error}"></div>
-
-        <div th:if="${shortUrl}" class="result">
-            <div class="hint">your short link:</div>
-            <a th:href="${shortUrl}" th:text="${shortUrl}" target="_blank" rel="noopener noreferrer"></a>
-        </div>
-
-        <form th:action="@{/create-link}" method="post" id="linkForm" class="form">
-            <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
-
-            <label class="label required" for="url">original url</label>
-            <input
-                    id="url"
-                    name="url"
-                    type="url"
-                    placeholder="https://example.com/very/long/url"
-                    required
-                    th:value="${url}"
-            />
-            <div class="hint">the long url you want to shorten</div>
-
-            <div class="checkbox-row">
-                <input id="enableDates" name="enableDates" type="checkbox" />
-                <label for="enableDates">add expiration dates (optional)</label>
-            </div>
-
-            <div id="dateFields" class="date-fields" aria-hidden="true">
-                <label for="activeFrom" class="label">Active From</label>
-                <input id="activeFrom" name="activeFrom" type="datetime-local" th:value="${activeFrom}" />
-
-                <label for="activeUntil" class="label">Active Until</label>
-                <input id="activeUntil" name="activeUntil" type="datetime-local" th:value="${activeUntil}" />
-
-                <div class="hint center">leave both empty for a three-day valid link starting now</div>
-            </div>
-
-            <div class="actions">
-                <button type="submit" class="btn">create link</button>
-            </div>
-        </form>
-    </section>
-</main>
-
+<script th:src="@{/js/date-utils.js}"></script>
 <script th:src="@{/js/create-auth-link.js}"></script>
 </body>
 </html>

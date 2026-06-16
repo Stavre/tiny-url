@@ -32,6 +32,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-h2console'
 	implementation 'com.h2database:h2'
 
@@ -42,6 +43,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-thymeleaf-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
@@ -67,7 +69,8 @@ pmd {
 	consoleOutput = true
 	toolVersion = "7.16.0"
 	rulesMinimumPriority = 5
-	ruleSets = ["category/java/bestpractices.xml"]
+	ruleSets = []
+	ruleSetFiles = files("pmd/pmd-rules.xml")
 }
 
 
@@ -76,6 +79,7 @@ jacocoTestReport {
 }
 
 jacocoTestCoverageVerification {
+	enabled = true
 	dependsOn jacocoTestReport
 	violationRules {
 		rule {
@@ -87,5 +91,5 @@ jacocoTestCoverageVerification {
 }
 
 check {
-	dependsOn("pmdTest")
+	dependsOn("pmdTest", "jacocoTestCoverageVerification")
 }

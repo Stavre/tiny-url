@@ -7,14 +7,20 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public interface LinkRepository extends JpaRepository<Link, Long> {
 
-    Optional<Link> findLinkByShortLinkId(UUID shortLinkId);
+    Optional<Link> findLinkByShortLinkId(String shortLinkId);
 
-    void deleteAllByShortLinkId(UUID shortLinkId);
+    @Query(value = "SELECT l.* FROM Link l "
+            + "WHERE l.short_link_id = :shortLinkId "
+            + "  AND (l.active_from IS NULL OR l.active_from <= CURRENT_TIMESTAMP) "
+            + "  AND (l.active_until IS NULL OR l.active_until > CURRENT_TIMESTAMP)",
+            nativeQuery = true)
+    Optional<Link> findActiveLinkByShortLinkId(String shortLinkId);
+
+    void deleteAllByShortLinkId(String shortLinkId);
 
     @PreAuthorize("#username == authentication.principal.username")
     @Query(value = "SELECT l.* "
@@ -24,14 +30,4 @@ public interface LinkRepository extends JpaRepository<Link, Long> {
             + "WHERE lu.user_name = :username;", nativeQuery = true)
     List<Link> findUserLinks(String username);
 
-    @Query(value = "SELECT l.* "
-            + "FROM Link l "
-            + "WHERE l.original_Url = :originalUrl "
-            + "  AND NOT EXISTS ( "
-            + "    SELECT 1"
-            + "    FROM Link_User lu "
-            + "    WHERE lu.short_link_id = l.short_Link_Id "
-            + "  );", nativeQuery = true)
-    Optional<Link> findAnonymousLinkByOriginalUrl(String originalUrl);
 }
-

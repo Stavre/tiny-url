@@ -1,240 +1,86 @@
+(function () {
+  var fromEl    = document.getElementById('activeFrom');
+  var untilEl   = document.getElementById('activeUntil');
+  var errorEl   = document.getElementById('dateError');
+  var warnEl    = document.getElementById('dateWarning');
+  var submitBtn = document.getElementById('submitBtn');
 
-    (function () {
-        // Utility: trim and ignore empty
-        function normalizeTag(t) {
-            return t ? t.trim() : '';
-        }
+  function validateDates() {
+    var from  = fromEl.value;
+    var until = untilEl.value;
+    errorEl.style.display = 'none';
+    warnEl.style.display  = 'none';
+    submitBtn.disabled    = false;
 
-        // Parse initial tags from hidden input (comma-separated)
-        function getInitialTags() {
-            const raw = document.getElementById('tagsHidden').value || '';
-            if (!raw) return [];
-            return raw.split(',').map(t => normalizeTag(t)).filter(Boolean);
-        }
+    if (!from && !until) return true;
 
-        // Render chips
-        function renderChips() {
-            const chipsContainer = document.getElementById('tagChips');
-            chipsContainer.innerHTML = '';
-            tags.forEach((tag, idx) => {
-                const span = document.createElement('span');
-                span.className = 'tag-badge';
-                span.style.cssText = 'display:inline-flex; align-items:center; gap:0.4rem; padding:0.25rem 0.5rem; border-radius:12px; background:#eef; font-size:0.85rem;';
-                span.textContent = tag;
-
-                const removeBtn = document.createElement('button');
-                removeBtn.type = 'button';
-                removeBtn.textContent = '✕';
-                removeBtn.style.cssText = 'background:transparent; border:none; cursor:pointer; margin-left:0.4rem; font-size:0.85rem;';
-                removeBtn.onclick = function () {
-                    removeTag(idx);
-                };
-
-                span.appendChild(removeBtn);
-                chipsContainer.appendChild(span);
-            });
-            updateHiddenTags();
-        }
-
-        // Add tag
-        function addTag(tag) {
-            const t = normalizeTag(tag);
-            if (!t) return;
-            // avoid duplicates (case-insensitive)
-            const exists = tags.some(existing => existing.toLowerCase() === t.toLowerCase());
-            if (!exists) {
-                tags.push(t);
-                renderChips();
-            }
-        }
-
-        // Remove tag by index
-        function removeTag(index) {
-            tags.splice(index, 1);
-            renderChips();
-        }
-
-        // Update hidden input value
-        function updateHiddenTags() {
-            document.getElementById('tagsHidden').value = tags.join(',');
-        }
-
-        // Add tag from visible input
-        window.addTagFromInput = function () {
-            const input = document.getElementById('tagInput');
-            addTag(input.value);
-            input.value = '';
-            input.focus();
-        };
-
-        // Handle Enter key in tag input
-        window.onTagInputKeydown = function (e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addTagFromInput();
-            }
-        };
-
-        // Expose removeTag for inline use (already used above)
-        window.removeTag = removeTag;
-
-        // Initialize tags array and render
-        const tags = getInitialTags();
-        document.addEventListener('DOMContentLoaded', function () {
-            renderChips();
-        });
-
-        // Ensure tags are merged before form submit (in case validateForm returns true)
-        const originalValidateForm = window.validateForm;
-        window.validateForm = function () {
-            updateHiddenTags();
-            if (typeof originalValidateForm === 'function') {
-                return originalValidateForm();
-            }
-            return true;
-        };
-
-        // Expose helper for external scripts if needed
-        window._tagEditor = {
-            addTag: addTag,
-            removeTag: removeTag,
-            getTags: () => tags.slice()
-        };
-    })();
-
-    function validateDates() {
-        const activeFrom = document.getElementById('activeFrom').value;
-        const activeUntil = document.getElementById('activeUntil').value;
-        const dateError = document.getElementById('dateError');
-        const dateWarning = document.getElementById('dateWarning');
-        const dateWarningMessage = document.getElementById('dateWarningMessage');
-        const submitBtn = document.getElementById('submitBtn');
-
-        // Reset
-        dateError.style.display = 'none';
-        dateWarning.style.display = 'none';
-        submitBtn.disabled = false;
-
-        // If both are empty, it's valid (permanent link)
-        if (!activeFrom && !activeUntil) {
-            return true;
-        }
-
-        // If one is filled but not both
-        if ((activeFrom && !activeUntil) || (!activeFrom && activeUntil)) {
-            dateError.style.display = 'block';
-            dateError.innerHTML = '❌ Both Active From and Active Until must be filled together';
-            submitBtn.disabled = true;
-            return false;
-        }
-
-        const fromDate = new Date(activeFrom);
-        const untilDate = new Date(activeUntil);
-        const now = new Date();
-
-        // Check if dates are valid
-        if (isNaN(fromDate.getTime()) || isNaN(untilDate.getTime())) {
-            dateError.style.display = 'block';
-            dateError.innerHTML = '❌ Please enter valid dates';
-            submitBtn.disabled = true;
-            return false;
-        }
-
-        // Check if from date is before until date
-        if (fromDate >= untilDate) {
-            dateError.style.display = 'block';
-            dateError.innerHTML = '❌ Active From must be before Active Until';
-            submitBtn.disabled = true;
-            return false;
-        }
-
-        // Check if until date is in the past
-        if (untilDate < now) {
-            dateError.style.display = 'block';
-            dateError.innerHTML = '❌ Active Until cannot be in the past';
-            submitBtn.disabled = true;
-            return false;
-        }
-
-        // Warning if from date is in the past
-        if (fromDate < now) {
-            dateWarning.style.display = 'block';
-            dateWarningMessage.innerHTML = '⚠️ Active From is in the past. The link will be active immediately.';
-        }
-
-        return true;
+    if (Boolean(from) !== Boolean(until)) {
+      errorEl.textContent   = 'Both dates must be set together, or both left empty.';
+      errorEl.style.display = 'block';
+      submitBtn.disabled    = true;
+      return false;
     }
 
-    function setDateRange(value, unit) {
-        const now = new Date();
-        const fromDate = new Date(now);
-        const untilDate = new Date(now);
+    var fromDate  = new Date(from);
+    var untilDate = new Date(until);
+    var now       = new Date();
 
-        if (unit === 'days') {
-            untilDate.setDate(now.getDate() + value);
-        } else if (unit === 'year') {
-            untilDate.setFullYear(now.getFullYear() + value);
-        }
-
-        document.getElementById('activeFrom').value = formatDateForInput(fromDate);
-        document.getElementById('activeUntil').value = formatDateForInput(untilDate);
-
-        validateDates();
+    if (fromDate >= untilDate) {
+      errorEl.textContent   = '"Active From" must be before "Active Until".';
+      errorEl.style.display = 'block';
+      submitBtn.disabled    = true;
+      return false;
     }
-
-    function clearDates() {
-        document.getElementById('activeFrom').value = '';
-        document.getElementById('activeUntil').value = '';
-        validateDates();
+    if (untilDate < now) {
+      errorEl.textContent   = '"Active Until" cannot be in the past.';
+      errorEl.style.display = 'block';
+      submitBtn.disabled    = true;
+      return false;
     }
-
-    function formatDateForInput(date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    if (fromDate < now) {
+      warnEl.textContent   = '"Active From" is in the past — the link will activate immediately.';
+      warnEl.style.display = 'block';
     }
+    return true;
+  }
 
-    function validateForm() {
-        return validateDates();
+  // Preset buttons wired via data-preset / data-value / data-unit
+  document.querySelectorAll('[data-preset]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var value = parseInt(btn.dataset.value, 10);
+      var unit  = btn.dataset.unit;
+      var base  = fromEl.value ? new Date(fromEl.value) : new Date();
+      var until = new Date(base);
+      if (unit === 'days') until.setDate(until.getDate() + value);
+      else until.setFullYear(until.getFullYear() + value);
+      if (!fromEl.value) fromEl.value = toInputFmt(base);
+      untilEl.value = toInputFmt(until);
+      validateDates();
+    });
+  });
+
+  var clearBtn = document.querySelector('[data-clear-dates]');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function () {
+      fromEl.value  = '';
+      untilEl.value = '';
+      validateDates();
+    });
+  }
+
+  fromEl.addEventListener('change', validateDates);
+  untilEl.addEventListener('change', validateDates);
+
+  // Surface any pre-existing invalid state immediately on page load
+  validateDates();
+
+  document.getElementById('editForm').addEventListener('submit', function (e) {
+    var url = document.getElementById('originalUrl').value.trim();
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      e.preventDefault();
+      alert('URL must start with http:// or https://');
+      return;
     }
-
-    function confirmDelete(linkId) {
-        if (confirm('Are you sure you want to delete this link? This action cannot be undone.')) {
-            window.location.href = '/links/delete/' + linkId;
-        }
-    }
-
-    function validateUrl(input) {
-        const url = input.value;
-        const urlError = document.getElementById('urlError');
-        const urlWarning = document.getElementById('urlWarning');
-
-        // Basic URL validation
-        const pattern = /^(http|https):\/\/[^ "]+$/;
-
-        if (url && !pattern.test(url)) {
-            input.classList.add('is-invalid');
-            urlError.style.display = 'block';
-            urlError.innerHTML = '❌ URL must start with http:// or https://';
-            return false;
-        } else if (url) {
-            input.classList.remove('is-invalid');
-            urlError.style.display = 'none';
-
-            // Check for common URL issues
-            if (url.includes('bit.ly') || url.includes('tinyurl.com') || url.includes('goo.gl')) {
-                urlWarning.innerHTML = '⚠️ This appears to be a shortened URL already';
-            } else {
-                urlWarning.innerHTML = '';
-            }
-            return true;
-        } else {
-            input.classList.remove('is-invalid');
-            urlError.style.display = 'none';
-            urlWarning.innerHTML = '';
-            return false;
-        }
-    }
+    if (!validateDates()) e.preventDefault();
+  });
+}());

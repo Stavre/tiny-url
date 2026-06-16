@@ -1,151 +1,96 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - TinyURL</title>
-    <link rel="stylesheet" th:href="@{/css/dashboard.css}"/>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>TinyURL — Dashboard</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
 </head>
 <body>
-<!-- Navigation -->
-<nav>
-    <div class="nav-container">
-        <a href="/" class="logo">tinyurl</a>
-        <a href="/dashboard" class="dashboard">dashboard</a>
-        <a href="/create-link" class="create-link">+ create new link</a>
-    </div>
-</nav>
 
-<!-- Main Content -->
-<div class="container">
-    <!-- Page Header -->
-    <div class="page-header">
-        <div>
-            <h1>📊 Dashboard</h1>
-            <p>Manage and monitor your shortened links</p>
-        </div>
+<th:block th:replace="~{fragments :: nav}"></th:block>
 
-        <!-- Quick Stats -->
-        <div class="stats-summary">
-            <div class="stat-item">
-                <div class="stat-value" th:text="${linkCount.totalLinks}">0</div>
-                <div class="stat-label">Total Links</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" th:text="${linkCount.activeLinks}">0</div>
-                <div class="stat-label">Active</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" th:text="${linkCount.expiredLinks}">0</div>
-                <div class="stat-label">Expired</div>
-            </div>
-        </div>
+<div class="page">
+  <div class="container-wide">
 
-        <!--         <-Links Table &ndash;&gt;-->
-        <div th:if="${not #lists.isEmpty(links)}" class="table-container">
-            <table>
-                <thead>
-                <tr>
-                    <th>Short URL</th>
-                    <th>Original URL</th>
-                    <th>Description</th>
-                    <th>Created</th>
-                    <th>Updated</th>
-                    <th>Active From</th>
-                    <th>Active Until</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="link : ${links}">
-                    <!-- Short URL -->
-                    <td>
-                        <div class="tooltip">
-                            <a th:href="${redirectLinkFormatter.getRedirectLink(link)}"
-                               th:text="${redirectLinkFormatter.getRedirectLink(link)}" target="_blank"></a>
-                            <span class="tooltip-text">Open link</span>
-                        </div>
-                    </td>
+    <h1 class="page-heading">Your links</h1>
 
-                    <!-- Original URL -->
-                    <td class="url-cell">
-                        <div class="tooltip">
-                            <a th:href="${link.originalUrl}" target="_blank" th:text="${link.originalUrl}"></a>
-                            <span class="tooltip-text" th:text="${link.originalUrl}"></span>
-                        </div>
-                    </td>
-
-
-
-                    <!-- Description -->
-                    <td th:text="${link.description != null ? link.description : '-'} ">
-                        Example description
-                    </td>
-
-                    <!-- Created At -->
-                    <td th:text="${#temporals.format(link.createdAt, 'yyyy-MM-dd')}">2024-01-15</td>
-
-                    <!-- Updated At -->
-                    <td th:text="${link.updatedAt != null} ? ${#temporals.format(link.updatedAt, 'yyyy-MM-dd')} : '-'">
-                        2024-01-15
-                    </td>
-
-                    <!-- Active From -->
-                    <td th:text="${link.activeFrom != null} ? ${#temporals.format(link.activeFrom, 'yyyy-MM-dd')} : '-'">
-                        2024-01-15
-                    </td>
-
-                    <!-- Active Until -->
-                    <td th:text="${link.activeUntil != null} ? ${#temporals.format(link.activeUntil, 'yyyy-MM-dd')} : 'Never'">
-                        2024-02-15
-                    </td>
-
-                    <!-- Status -->
-                    <td>
-                                    <span class="badge" th:classappend="${link.activeUntil == null} ? 'badge-permanent' :
-                                                                           (${link.activeUntil.isAfter(T(java.time.LocalDateTime).now())} ? 'badge-valid' : 'badge-expired')"
-                                          th:text="${link.activeUntil == null} ? 'Permanent' :
-                                                   (${link.activeUntil.isAfter(T(java.time.LocalDateTime).now())} ? 'Active' : 'Expired')">
-                                    </span>
-                    </td>
-
-                    <!-- Actions -->
-                    <td class="actions">
-                        <a th:href="@{/link-stats/{id}(id=${link.shortLinkId})}" class="btn btn-stats tooltip">
-                            📊 Stats
-                            <span class="tooltip-text">View statistics</span>
-                        </a>
-                        <a th:href="@{/update-link/{id}(id=${link.shortLinkId})}" class="btn btn-edit tooltip">
-                            ✏️ Edit
-                            <span class="tooltip-text">Edit link</span>
-                        </a>
-                        <form th:action="@{/delete-link/{id}(id=${link.shortLinkId})}"
-                              method="post"
-                              style="display: inline;"
-                              onsubmit="return confirmDelete(event, this)">
-
-                            <!-- Hidden method field for DELETE -->
-                            <input type="hidden" name="_method" value="DELETE"/>
-
-                            <!-- CSRF token (required for Spring Security) -->
-                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-
-                            <button type="submit" class="btn btn-delete tooltip">
-                                🗑️ Delete
-                                <span class="tooltip-text">Delete link</span>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num" th:text="${linkCount.totalLinks}">0</div>
+        <div class="stat-label">Total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" th:text="${linkCount.activeLinks}">0</div>
+        <div class="stat-label">Active</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" th:text="${linkCount.expiredLinks}">0</div>
+        <div class="stat-label">Expired</div>
+      </div>
     </div>
 
+    <div th:if="${not #lists.isEmpty(links)}" class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Short URL</th>
+            <th>Original URL</th>
+            <th>Description</th>
+            <th>Created</th>
+            <th>Active From</th>
+            <th>Active Until</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="link : ${links}">
+            <td class="td-url" th:with="url=${redirectBase + link.shortLinkId}">
+              <a th:href="${url}" th:text="${url}"
+                 target="_blank" rel="noopener noreferrer"></a>
+            </td>
+            <td class="td-url">
+              <a th:href="${link.originalUrl}" th:text="${link.originalUrl}"
+                 target="_blank" rel="noopener noreferrer"></a>
+            </td>
+            <td th:text="${link.description != null and !link.description.isEmpty() ? link.description : '—'}"></td>
+            <td th:text="${#temporals.format(link.createdAt, 'dd MMM yyyy')}"></td>
+            <td th:text="${link.activeFrom  != null ? #temporals.format(link.activeFrom,  'dd MMM yyyy') : '—'}"></td>
+            <td th:text="${link.activeUntil != null ? #temporals.format(link.activeUntil, 'dd MMM yyyy') : 'Never'}"></td>
+            <td>
+              <span class="badge"
+                    th:classappend="${link.active ? 'badge-active' : 'badge-expired'}"
+                    th:text="${link.active ? 'Active' : 'Expired'}">
+              </span>
+            </td>
+            <td>
+              <div class="td-actions">
+                <a th:href="@{/link-stats/{id}(id=${link.shortLinkId})}"
+                   class="btn btn-secondary btn-sm">Stats</a>
+                <a th:href="@{/update-link/{id}(id=${link.shortLinkId})}"
+                   class="btn btn-secondary btn-sm">Edit</a>
+                <form th:action="@{/delete-link/{id}(id=${link.shortLinkId})}" method="post"
+                      data-confirm="Delete this link?">
+                  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                  <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div th:if="${#lists.isEmpty(links)}" class="empty-state">
+      <h3>No links yet</h3>
+      <p>Create your first short link to get started.</p>
+      <a th:href="@{/create-link}" class="btn btn-primary">Create a link</a>
+    </div>
+
+  </div>
 </div>
 
-<script th:src="@{/js/dashboard.js}"></script>
-
+<script th:src="@{/js/confirm.js}"></script>
 </body>
 </html>

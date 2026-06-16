@@ -1,68 +1,63 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const checkbox = document.getElementById('enableDates');
-  const dateFields = document.getElementById('dateFields');
-  const form = document.getElementById('linkForm');
+(function () {
+  var details  = document.getElementById('dateDetails');
+  var fromEl   = document.getElementById('activeFrom');
+  var untilEl  = document.getElementById('activeUntil');
+  var clearBtn = document.getElementById('clearDatesBtn');
 
-  // Restore visibility if server returned values
-  if (document.getElementById('activeFrom').value || document.getElementById('activeUntil').value) {
-    checkbox.checked = true;
-    dateFields.classList.add('visible');
-    dateFields.setAttribute('aria-hidden', 'false');
+  function setDefaults() {
+    if (!fromEl.value) {
+      fromEl.value = toInputFmt(new Date());
+    }
+    if (!untilEl.value) {
+      var until = new Date();
+      until.setDate(until.getDate() + 30);
+      until.setHours(23, 59, 0, 0);
+      untilEl.value = toInputFmt(until);
+    }
   }
 
-  checkbox.addEventListener('change', () => {
-    const visible = checkbox.checked;
-    dateFields.classList.toggle('visible', visible);
-    dateFields.setAttribute('aria-hidden', String(!visible));
-    if (visible) fillDefaultDatesIfEmpty();
-    else {
-      document.getElementById('activeFrom').value = '';
-      document.getElementById('activeUntil').value = '';
-    }
+  // If server re-rendered with values (e.g. after a validation error), keep section open
+  if (fromEl.value || untilEl.value) {
+    details.open = true;
+  }
+
+  details.addEventListener('toggle', function () {
+    if (details.open) setDefaults();
+    // Dates are NOT cleared on close — use the Clear button to discard them
   });
 
-  function fillDefaultDatesIfEmpty() {
-    const now = new Date();
-    const fromInput = document.getElementById('activeFrom');
-    const untilInput = document.getElementById('activeUntil');
-
-    if (!fromInput.value) {
-      const fromDate = new Date(now);
-      fromDate.setHours(0,0,0,0);
-      fromInput.value = fromDate.toISOString().slice(0,16);
-    }
-    if (!untilInput.value) {
-      const untilDate = new Date(now);
-      untilDate.setDate(now.getDate() + 30);
-      untilDate.setHours(23,59,0,0);
-      untilInput.value = untilDate.toISOString().slice(0,16);
-    }
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function () {
+      fromEl.value  = '';
+      untilEl.value = '';
+    });
   }
 
-  form.addEventListener('submit', function (e) {
-    const url = document.getElementById('url').value.trim();
-    const activeFrom = document.getElementById('activeFrom').value;
-    const activeUntil = document.getElementById('activeUntil').value;
-
+  document.getElementById('linkForm').addEventListener('submit', function (e) {
+    var url = document.getElementById('url').value.trim();
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       e.preventDefault();
       alert('URL must start with http:// or https://');
       return;
     }
-
-    if (activeFrom && activeUntil) {
-      const fromDate = new Date(activeFrom);
-      const untilDate = new Date(activeUntil);
-      if (fromDate >= untilDate) {
+    var from  = fromEl.value;
+    var until = untilEl.value;
+    if (Boolean(from) !== Boolean(until)) {
+      e.preventDefault();
+      alert('Both "Active From" and "Active Until" must be set together, or both left empty.');
+      return;
+    }
+    if (from && until) {
+      if (new Date(from) >= new Date(until)) {
         e.preventDefault();
-        alert('Active From must be before Active Until');
+        alert('"Active From" must be before "Active Until"');
         return;
       }
-      if (untilDate < new Date()) {
+      if (new Date(until) < new Date()) {
         e.preventDefault();
-        alert('Active Until cannot be in the past');
+        alert('"Active Until" cannot be in the past');
         return;
       }
     }
   });
-});
+}());

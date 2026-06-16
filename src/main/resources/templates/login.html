@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>TinyURL — Log In</title>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div class="page centered">
+  <div class="container">
+    <div class="card">
+      <h1 class="card-title">Log in</h1>
+      <p class="card-subtitle">Welcome back.</p>
+
+      <div th:if="${param.error}"  class="alert alert-error">Incorrect username or password.</div>
+      <div th:if="${param.logout}" class="alert alert-success">You have been logged out.</div>
+
+      <form th:action="@{/login}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+        <div class="field">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" required autofocus autocomplete="username"/>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" required autocomplete="current-password"/>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full">Log in</button>
+      </form>
+
+      <p class="hint" style="text-align:center; margin-top:1.25rem;">
+        <a th:href="@{/create-link}">Continue without an account</a>
+      </p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

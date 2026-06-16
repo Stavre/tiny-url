@@ -5,7 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
-import java.util.UUID;
 
 @Data
 @Entity
@@ -13,6 +12,6 @@ public class LinkUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private UUID shortLinkId;
+    private String shortLinkId;
     private String userName;
 }
